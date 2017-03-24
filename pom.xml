@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.3.RELEASE</version>
+		<version>1.4.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -23,9 +23,20 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<cxf.version>3.1.9</cxf.version>
+		<jaxb-xew-plugin.version>1.8</jaxb-xew-plugin.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
@@ -33,11 +44,35 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http-hc</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<!--<dependency>-->
+		<!--<groupId>org.apache.cxf</groupId>-->
+		<!--<artifactId>cxf-rt-transports-http-netty-client</artifactId>-->
+		<!--<version>${cxf.version}</version>-->
+		<!--</dependency>-->
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Camden.SR5</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
@@ -58,10 +93,15 @@
 							<wsdlOptions>
 								<wsdlOption>
 									<wsdl>http://localhost:9000/hotel?wsdl</wsdl>
-									<!--<extraargs>-->
-									<!--<extraarg>-client</extraarg>-->
-									<!--<extraarg>-impl</extraarg>-->
-									<!--</extraargs>-->
+									<extraargs>
+										<!--<extraarg>-client</extraarg>-->
+										<!--<extraarg>-impl</extraarg>-->
+										<extraarg>-b</extraarg>
+										<extraarg>${basedir}/src/main/resources/async_binding.xml</extraarg>
+										<extraarg>-xjc-Xxew</extraarg>
+										<extraarg>-xjc-Xxew:summary ${project.build.outputDirectory}/../summary.txt</extraarg>
+										<extraarg>-xjc-Xxew:instantiate lazy</extraarg>
+									</extraargs>
 								</wsdlOption>
 							</wsdlOptions>
 						</configuration>
@@ -70,6 +110,13 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>com.github.jaxb-xew-plugin</groupId>
+						<artifactId>jaxb-xew-plugin</artifactId>
+						<version>${jaxb-xew-plugin.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

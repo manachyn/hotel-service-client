@@ -51,7 +51,7 @@ public class HotelServiceClient {
 
         try {
             SearchHotelsResponse response = port.searchHotels(request);
-            List<Hotel> hotels = response.getSearchHotelsResult().getHotels();
+            List<Hotel> hotels = response.getSearchHotelsResult();
             System.out.println(hotels);
             System.out.println(response);
         } catch (SearchHotelsException e) {
